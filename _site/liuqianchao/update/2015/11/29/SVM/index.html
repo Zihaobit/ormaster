@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Support Vector Machine</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="baidu-site-verification" content="r1z1K1EYR2" />
+    <meta name="description" content="Welcome to Q.Liu's Homepage. Here you can find something about my research interests.">
+    <link rel="canonical" href="http://localhost:4000/liuqianchao/update/2015/11/29/SVM/">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    <!-- 
+    <link rel="stylesheet" href="/css/pygments.css"> -->
+
+    <!-- mathjax -->
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+
+    <!-- GoogleAnalytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-69826873-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <!-- baidu spider-->
+    <script>
+    (function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+  <div class="wrap">
+
+    <a class="site-title" href="/">Q.Liu</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+           viewBox="0 0 18 15" enable-background="new 0 0 18 15" xml:space="preserve">
+          <path fill="#505050" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0
+            h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#505050" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484
+            h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#505050" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0
+            c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+      <div class="trigger">
+        
+          <a class="page-link" href="/about/">About</a>
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrap">
+      <div class="post">
+
+  <header class="post-header">
+    <h1>Support Vector Machine</h1>
+    <p class="meta">Nov 29, 2015</p>
+  </header>
+
+  <article class="post-content">
+  <p>Support Vector Machine(<em>SVM</em>), k-Nearest Neighbors algorithm(<em>k-NN</em>), and Naive Bayes classifier(<em>NB</em>) are the most popular and basic approaches for classification. In this article, I will give some mathmetical equations of <em>SVM</em> and approaches to use <em>SVM</em>.</p>
+
+<p>###1. What is <em>SVM</em>?
+In general, there are two kinds of classificaiton, <strong>non-parametric</strong> and <strong>parametric</strong> approaches. The parametric approach is to assume a simple parametric model for density functions and to estimate the parameters of the model using an available training set.
+However, for most of cases, we can not assume that the desity of data samples can be characterised by a series of parameters in this irregular world. So we introduce the non-parametric method which includes <em>SVM</em>.</p>
+
+<p>###2. How it works?</p>
+
+<p>####2.1 Maximum margin classifier
+The <em>SVM</em> uses a very simple idea which can be conclude in a word: maximum margin.  <br />
+Suppose that we have a set of training patterns.{<script type="math/tex">x_{i},i=1,...,m</script>} assigned to one of two classes <script type="math/tex">\omega_{1}</script> and <script type="math/tex">\omega_{2}</script>, with corresponding labels <script type="math/tex">y_{i}=\pm1</script>.   <br />
+Denote the linear discriminant function <script type="math/tex">g(x)</script>, where both <script type="math/tex">x_{i}</script> and <script type="math/tex">w</script> are n-dimension vectors:</p>
+
+<div align="center">
+$$g(x_{i})=w^{T}x_{i}+b$$
+</div>
+<p>if <script type="math/tex">% <![CDATA[
+g(x)<0 %]]></script> we see <script type="math/tex">x</script> as label <script type="math/tex">y_{i}=-1</script>, and if <script type="math/tex">g(x)>0</script> we see <script type="math/tex">x</script> as label <script type="math/tex">y_{i}=+1</script>. Here all points are subject to:</p>
+
+<div align="center">
+$$y_{i}(w^{T}x_{i}+b)\geq0$$
+</div>
+<p>The <strong>hyperplane</strong> is :<script type="math/tex">y_{i}(w^{T}x_{i}+b)=0</script>. <br />
+Then we introduce <strong>functional margin</strong> <script type="math/tex">\gamma</script> : <script type="math/tex">y_{i}(w^{T}x_{i}+b)</script>, which is a positive number. <br />
+And the <strong>geometric margin</strong> <script type="math/tex">\tilde{\gamma}</script>: <script type="math/tex">y_{i}(\frac{w^{T}x_{i}}{||w||}+\frac{b}{||w||})</script>. After introducing the geometric margin, we can scale value of <script type="math/tex">w</script> and <script type="math/tex">b</script> arbitrarily and without changing the geometric margin and the position of this hyperplane: <script type="math/tex">y_{i}(w^{T}x_{i}+b)=0</script>.
+For better classify, we should maximize the margin between two groups by some methods about convex optimization which will change the value of <script type="math/tex">w</script> and <script type="math/tex">b</script>.</p>
+
+<p>To maximize the geometric margin:</p>
+
+<ul>
+  <li>step 1 build the model:</li>
+</ul>
+
+<div align="center">$$\max \limits_{w,b} y_{i}(\frac{w^{T}x_{i}}{||w||}+\frac{b}{||w||})$$</div>
+<p>At first, we constraint that <script type="math/tex">||w||=1</script>, this step can be finished by rescaling the parameters after find solution of <script type="math/tex">w^{T}</script> and <script type="math/tex">b</script>. And this constraint can make sure that geometric and the functional margin are the same. However, this contraint is a nonconvex constraint.</p>
+
+<ul>
+  <li>step 2 convert to convex optimization problem:</li>
+</ul>
+
+<div align="center">$$\min \limits_{w,b} \frac{1}{2}||w||^{2}$$</div>
+<p>Here another constraint has been added: the functional margin <script type="math/tex">\gamma=1</script> which is the same with: <script type="math/tex">\min \limits_{i} y_{i}(w^{T}x_{i}+b)=1</script>. And this objective function is a quadratic problem.</p>
+
+<ul>
+  <li>step 3 another kind of convex optimization problem(applied for high or infinite dimensional vector):</li>
+</ul>
+
+<div align="center">$$\frac{1}{2}||w||^{2}-\sum_{i=1}^m\alpha_{i}[y_{i}(w^{T}x_{i}+b)-1]$$</div>
+<p>Using the method of <em>Lagrange multipliers</em>, you construct a Lagrangian and set the partial derivative with respect to the original parameters <script type="math/tex">w</script> and <script type="math/tex">b</script> and the Lagrange multipliers <script type="math/tex">\alpha</script> and <script type="math/tex">\beta</script> equal to 0.
+The original objective function: <script type="math/tex">\min \limits_{w,b} \frac{1}{2}||w||^{2}</script> , and the constraint function: <script type="math/tex">y_{i}(w^{T}x_{i}+b)\geq1</script>, Then we get the function as showed above. Therefore, to satisfy demand, our objective function turns out:</p>
+
+<div align="center">$$\min \limits_{w,b}\max \limits_{\alpha_{i}} \frac{1}{2}||w||^{2}-\sum_{i=1}^m\alpha_{i}[y_{i}(w^{T}x_{i}+b)-1]=L_{P}$$</div>
+<p>which is equal to the objective function in step 2. And the dual form of <script type="math/tex">L_{P}</script> is:</p>
+
+<div align="center">$$\max \limits_{\alpha_{i}}\min \limits_{w,b} \frac{1}{2}||w||^{2}-\sum_{i=1}^m\alpha_{i}[y_{i}(w^{T}x_{i}+b)-1]=L_{D}$$</div>
+<p>where <script type="math/tex">L_{D}\leq L_{P}</script> and function <script type="math/tex">L_{P}</script> must be satisfied with the KKT (5 rules). With <script type="math/tex">\frac{\delta L_{P}}{\delta w}=0</script> and <script type="math/tex">\frac{\delta L_{P}}{\delta b}=0</script>, we get:</p>
+
+<div align="center">$$w=\sum_{i=1}^m \alpha_{i} y_{i} x_{i}$$</div>
+
+<div align="center">$$\sum_{i=1}^m \alpha_{i} y_{i} = 0$$</div>
+<p>Substituting into <script type="math/tex">L_{D}</script>:</p>
+
+<div align="center">$$\max \limits_{\alpha_{i}} \sum_{i=1}^m \alpha_{i} - \frac{1}{2} \sum_{i=1}^m \sum_{j=1}^m \alpha_{i} \alpha_{j} y_{i} y_{j} x_{i}^{T} x_{j}$$</div>
+
+<div align="center">$$s.t. \alpha_{i}\geq0$$ $$\sum_{i=1}^m \alpha_{i} y_{i} =0$$</div>
+<p>which is also a convex problem, we can get the solution of <script type="math/tex">w</script> and <script type="math/tex">b</script>.</p>
+
+<p>####2.2 kernel trick
+Then, we will introduce the concept of <strong><em>kernel trick</em></strong>. How can we distinguish ◇ from △ showed below? Obiviously, there are no hyperplane to classify one from the other.</p>
+
+<div align="center">   
+<canvas id="myCanvas" width="250" height="180" style="border:0px solid #c3c3c3;">
+Your browser does not support the canvas element. here is graph written by html.
+</canvas>
+<script type="text/javascript">
+var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+
+var txt1="△                     ◇";
+var txt2="◇                     △";
+ctx.font = "20px Helvetica red";            
+ctx.textBaseline = 'top';
+ctx.fillText(txt1, 40, 0);
+ctx.fillText(txt2, 0,130);
+</script>
+</div>
+<p>One possible way for us to solve this problem is to find out a projection function <script type="math/tex">\phi(\cdot)</script> which will figure out a hyperplane in a higher dimension space. However, this method may also bring the dimension disaster problem. To solve this problem, <em>kernel trick</em> has been created. <br />
+Instead of <script type="math/tex">% <![CDATA[
+<\phi(x_{i}),\phi(x)> %]]></script>, here we use kernel function:</p>
+
+<div align="center">$$K(x_{i},x)$$</div>
+<p>Many kernel functions have been proposed, the most popular menthods are: linear kernel, RBF kernel, polynomial kernel and Sigmoid kernel. <br />
+<strong>Linear kernel</strong>:</p>
+
+<div align="center">$$K(x_{i},x)=x_{i}^{T}x$$</div>
+<p><strong>RBF kernel with width <script type="math/tex">\sigma</script></strong>:</p>
+
+<div align="center">$$K(x_{i},x)=exp(\frac{-||x_{i}-x||^{2}}{2 \sigma^{2}})$$</div>
+<p><strong>polynomial kernel with degree <script type="math/tex">d</script></strong>:</p>
+
+<div align="center">$$K(x_{i},x)=(x_{i}^{T}x+1)^{d}$$</div>
+<p><strong>Sigmoid kernel with parameter <script type="math/tex">k</script> and <script type="math/tex">\theta</script></strong>:</p>
+
+<div align="center">$$K(x_{i},x)=tanh(kx_{i}^{T}x+\theta)$$</div>
+
+<p>###3. Using <em>SVM</em> in your work.
+There is a package named <strong><em>scikit-learn</em></strong> in Python. Find information to install it at <a href="http://scikit-learn.org/stable/index.html">here</a>. We can use the official date sets of <em>scikit-learn</em>, and examine the performance of classification. Here, we use <em>Iris</em> dataset. There are 3 kinds of iris, each sample has 4 properties which include petal length, petal width, sepal length, and sepal width.</p>
+
+<p>In this experiment, we will show how to conduct a binary classification task. We removed one kind of iris, and two groups of iris are left. After this process, we have two kinds of iris, and each kind has 50 samples. And in order to draw two-dimensional chart, two properties are left: petal length and sepal length.</p>
+
+<p>####3.1 Handle the dataset</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#acquire and handle dataset.</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span> 
+<span class="n">iris</span><span class="o">=</span><span class="n">datasets</span><span class="o">.</span><span class="n">load_iris</span><span class="p">()</span>
+<span class="n">dateset_property</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">dateset_target</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">[</span><span class="n">num</span><span class="p">]</span><span class="o">!=</span><span class="mi">2</span><span class="p">:</span> <span class="c">#iris.target[num]=2 is corresponding to the third kind of iris</span>
+        <span class="n">dateset_property</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">num</span><span class="p">])</span>
+        <span class="n">dateset_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">[</span><span class="n">num</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dateset_property</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dateset_target</span><span class="p">)</span></code></pre></figure>
+
+<p>####3.2 Train the model.
+In this experiment, I apply 4 kinds of kernel function, including <em>linear</em>,<em>poly</em>,<em>RBF</em> and <em>sigmoid</em>.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">svm</span>
+<span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="c">#split the dataset, and rearrange the list</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+
+<span class="c"># create a mesh to plot in</span>
+<span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">x_train</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="nb">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">x_train</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="nb">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.1</span>
+<span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">x_train</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="nb">min</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_train</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="nb">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">))</span>
+
+<span class="c"># title for the plots</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s">'LinearSVC (linear kernel)'</span><span class="p">,</span><span class="s">'SVC with polynomial (degree 3) kernel'</span><span class="p">,</span> <span class="s">'SVC with RBF kernel'</span><span class="p">,</span> <span class="s">'SVC with Sigmoid kernel'</span><span class="p">]</span>
+<span class="n">clf_linear</span>  <span class="o">=</span> <span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s">'linear'</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">clf_poly</span>    <span class="o">=</span> <span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s">'poly'</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">clf_rbf</span>     <span class="o">=</span> <span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">clf_sigmoid</span> <span class="o">=</span> <span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s">'sigmoid'</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span></code></pre></figure>
+
+<p>####3.3 Draw plot</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">clf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">((</span><span class="n">clf_linear</span><span class="p">,</span> <span class="n">clf_poly</span><span class="p">,</span> <span class="n">clf_rbf</span><span class="p">,</span> <span class="n">clf_sigmoid</span><span class="p">)):</span>
+    <span class="c">#result are the predict result of all the meshgrid.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">xx</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">yy</span><span class="o">.</span><span class="n">ravel</span><span class="p">()])</span>
+
+    <span class="c">#set the composition of plot</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.35</span><span class="p">)</span>
+
+    <span class="c"># Put the result into a color plot.</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">xx</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'terrain'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+    <span class="c"># Plot the training points</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'terrain'</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">u'petal length'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">u'sepal length'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">xx</span><span class="o">.</span><span class="nb">min</span><span class="p">(),</span> <span class="n">xx</span><span class="o">.</span><span class="nb">max</span><span class="p">())</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">yy</span><span class="o">.</span><span class="nb">min</span><span class="p">(),</span> <span class="n">yy</span><span class="o">.</span><span class="nb">max</span><span class="p">())</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">titles</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></code></pre></figure>
+
+<h4 id="result-of-classification">Result of classification</h4>
+<div align="center">
+<img src="http://localhost:4000/assets/screenshot.png" width="550" height="440" />
+</div>
+<div align="center">
+Figure: result of classification
+</div>
+
+<h4 id="reference">Reference</h4>
+<ol>
+  <li>Andrew R. Webb and Keith D. Copsey <em>Statistical Pattern Recognition(Third Edition)</em>.</li>
+  <li>Martin Law <a href="http://www.cise.ufl.edu/class/cis4930sp11dtm/notes/intro_svm_new.pdf"><em>A Simple Introduction to Support Vector Machines</em></a>.</li>
+  <li>Andrew Ng <em>Machine Learning (Stanford CS229)</em>.</li>
+</ol>
+
+  </article>
+
+
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<div id="disqus_thread"></div>
+
+<script>
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//liuqianchao.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+      </div>
+    </div>
+
+    
+<footer class="site-footer">
+
+  <div class="wrap">
+
+    <h2 class="footer-heading">Q.Liu</h2>
+
+    <div class="footer-col-1 column">
+      <ul>
+        <li>Q.Liu</li>
+        <li><a href="mailto:liuqianchao@163.com">liuqianchao@163.com</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col-2 column">
+      <ul>
+        <li>
+          <a href="https://github.com/qianchaoliu">
+            <span class="icon github">
+              <svg version="1.1" class="github-icon-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 viewBox="0 0 16 16" enable-background="new 0 0 16 16" xml:space="preserve">
+                <path fill-rule="evenodd" clip-rule="evenodd" fill="#C2C2C2" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761
+                c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32
+                c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472
+                c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037
+                C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65
+                c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261
+                c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082
+                c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129
+                c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+              </svg>
+            </span>
+            <span class="username">qianchaoliu</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://twitter.com/liuqianchao">
+            <span class="icon twitter">
+              <svg version="1.1" class="twitter-icon-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 viewBox="0 0 16 16" enable-background="new 0 0 16 16" xml:space="preserve">
+                <path fill="#C2C2C2" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27
+                c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767
+                c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206
+                C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271
+                c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469
+                c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+              </svg>
+            </span>
+            <span class="username">liuqianchao</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="footer-col-3 column">
+      <p class="text">Welcome to Q.Liu's Homepage. Here you can find something about my research interests.</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+
+
+    </body>
+</html>
